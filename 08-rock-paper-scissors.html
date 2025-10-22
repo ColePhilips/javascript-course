@@ -16,11 +16,35 @@
         <button onclick="
             playGame('scissors');
         ">Scissors</button>
+        <button onclick="
+            score.wins = 0;
+            score.losses = 0;
+            score.ties = 0;
+            localStorage.removeItem('score');
+        ">Reset Score</button>
         <script>
             // algo: 
             //1. computer randomly selects a move
             //2. compare the moves to get the result
-            //3. Display the result in a popup
+            //3. Update a score
+            //4. Display the result and score in a popup
+
+            let score = JSON.parse(localStorage.getItem('score')) || {
+                wins: 0,
+                losses: 0,
+                ties: 0
+            };
+            
+            /*
+            if(!score){
+                score = {
+                    wins: 0,
+                    losses: 0,
+                    ties: 0
+                };
+            }
+            */
+
             function playGame(playerMove){
                 const computerMove = pickComputerMove();
                 let result = '';
@@ -50,7 +74,19 @@
                         result = 'You win.';
                     }
                 }
-                alert(`You picked ${playerMove}. Computer picked ${computerMove}. ${result}`);
+
+                if(result === 'You win.') {
+                    score.wins++;
+                } else if(result === 'You lose.') {
+                    score.losses++;
+                } else if(result === 'Tie.') {
+                    score.ties++;
+                }
+
+                localStorage.setItem('score', JSON.stringify(score));
+
+                alert(`You picked ${playerMove}. Computer picked ${computerMove}. ${result}
+Wins: ${score.wins}, Losses: ${score.losses}, Ties: ${score.ties}`);
             }
 
             function pickComputerMove() {
